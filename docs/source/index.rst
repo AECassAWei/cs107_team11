@@ -289,7 +289,7 @@ After the function(s) has been defined using any of the formats above, set a new
 
 Reverse Mode
 -------------
-Reverse mode are implemented so that the input and output formats are exactly the same as forward mode. To use reverse mode, simply replace the initialized class as an instance of ``Reverse`` class, and use ``reverse()`` function to access the Jacobian. Follow the example below to use our ``Pomeranian`` package.
+Reverse mode is implemented so that the input and output formats are exactly the same as forward mode. To use reverse mode, simply replace the initialized class as an instance of ``Reverse`` class, and use ``reverse()`` function to access the Jacobian. Follow the example below to use our ``Pomeranian`` package.
 
 .. code-block:: python
 
@@ -463,7 +463,7 @@ Method and Name Attributes
         * self.function: inherited from AutoDiff class
         * self.n_inputs: inherited from AutoDiff class
     * Methods:
-        * _gradiant: recursively compute derivatives at each children Nodes of root
+        * _gradiant: recursively compute derivatives at each children Node of root
         * get_value: evaluate the value of function applied at input variables
         * reverse: calculate derivative/Jacobian of function(s) by reverse mode AD
         * dunder methods overload (i.e., *__repr__*)
