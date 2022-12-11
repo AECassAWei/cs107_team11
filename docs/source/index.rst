@@ -20,12 +20,11 @@ Motivation for Automatic Differentiation
 
 Automatic differentiation is often contrasted with other methods for calculating derivations such as the finite-difference method, which is a numerical method for approximating the solution to differential equations. The finite-difference method relies on the definition of a derivative to approximate its solution: 
 
-$$
-\\frac{df}{dx} = \\lim\\limits_{\\epsilon \\to 0} \\frac{f(x+\\epsilon)-f(x)}{\\epsilon}
-$$
+.. math::
 
+    \frac{df}{dx} = \lim\limits_{\epsilon \to 0} \frac{f(x+\epsilon)-f(x)}{\epsilon}
 
-Of note, the finite-difference method relies on choosing the best $\\epsilon$ value, and it is unclear how to do so. Poorly-chosen $\\epsilon$ values may cause inaccurate approximations or instability of solutions (e.g., due to floating point errors). 
+Of note, the finite-difference method relies on choosing the best :math:`\epsilon` value, and it is unclear how to do so. Poorly-chosen :math:`\epsilon` values may cause inaccurate approximations or instability of solutions (e.g., due to floating point errors). 
 
 Another potential method of finding derivatives in real-world applications is symbolic differentiation, which works directly with mathematical equations. However, there are important limitations to this method as well. Specifically, symbolic differentiation can be too computationally costly when functions become highly complex, is a very memory-intensive process, and may not always be applicable depending on the exact form of the function. 
 
@@ -42,18 +41,17 @@ Background
 Chain rule
 -----------
 `Chain rule <https://en.wikipedia.org/wiki/Chain_rule>`_ is at the heart of automatic differentiation. It enables us to decompose complex functions into piecewise evaluation. 
-Suppose that we have a function $g(h(x))$. We could apply chain rule to calculate the derivative of g with respect to t:
+Suppose that we have a function :math:`g(h(x))`. We could apply chain rule to calculate the derivative of g with respect to t:
 
-$$
-\\frac{dg}{dx} = \\frac{\\partial g}{\\partial h}\\frac{\\partial h}{\\partial x}
-$$
+.. math::
 
+    \frac{dg}{dx} = \frac{\partial g}{\partial h}\frac{\partial h}{\partial x}
 
-Chain rule can also be used in a high dimensional scenario. If we have a function $g(h(x))$ where $h \\in R^n$ and $x \\in R^m$. The derivative can be expressed as a gradient vector:
+Chain rule can also be used in a high dimensional scenario. If we have a function :math:`g(h(x))` where :math:`h \in R^n` and :math:`x \in R^m`. The derivative can be expressed as a gradient vector:
 
-$$
-\\nabla_xg=\\sum_{{i=1}^{n}}\\frac{\\partial g}{\\partial h_i}\\nabla h_i(x)
-$$
+.. math::
+
+    \nabla_xg=\sum_{{i=1}^{n}}\frac{\partial g}{\partial h_i}\nabla h_i(x)
 
 Elementary functions
 ---------------------
@@ -61,36 +59,34 @@ A complex function could be broken down into elementary functions in order to ev
 
 Forward mode
 -------------
-In forward mode, we evaluate the intermediate results $v_i$ and the directional derivative at the same time.
+In forward mode, we evaluate the intermediate results :math:`v_i` and the directional derivative at the same time.
 
 Evaluation trace
 -----------------
-The evaluation of a function involves partial ordering of the operations associated with f, forming a evaluation trace. The evaluation trace introduces intermediate results $v_i$ that elementary functions could operate on. These intermediate results depend on independent variables.
+The evaluation of a function involves partial ordering of the operations associated with f, forming a evaluation trace. The evaluation trace introduces intermediate results :math:`v_i` that elementary functions could operate on. These intermediate results depend on independent variables.
 
 Computational graph
 --------------------
-We could visualize the evaluation trace as a computational graph, with each intermediate variable as a node and each elementary function as a edge. For example, the computational graph for $f(x, y)=e^{sin(x)-cos(y)^2}$ looks like the graph below:
+We could visualize the evaluation trace as a computational graph, with each intermediate variable as a node and each elementary function as a edge. For example, the computational graph for :math:`f(x, y)=e^{sin(x)-cos(y)^2}` looks like the graph below:
 
-.. image:: Computational_graph_example_new.png
+.. image:: ../../pictures/Computational_graph_example_new.png
 
 Directional derivative and seed vector
 ---------------------------------------
-In the computational graph for the forward mode, each node not only carries the evaluation of intermediate variable, but also a directional derivative of the intermediate variable in a given direction $p \\in R^m$. These two operations happen simultaneously and are termed as the primal trace and the tangent trace. The directional derivative is calculated by projecting the gradient vector into the direction of the seed vector $p$:
+In the computational graph for the forward mode, each node not only carries the evaluation of intermediate variable, but also a directional derivative of the intermediate variable in a given direction :math:`p \in R^m`. These two operations happen simultaneously and are termed as the primal trace and the tangent trace. The directional derivative is calculated by projecting the gradient vector into the direction of the seed vector :math:`p`:
 
-$$
-D_pg_i \\stackrel{\\text{def}}{=}   \\nabla_xg=\\sum_{{i=1}^{n}}\\frac{\\partial g}{\\partial h_i}\\nabla h_i(x)
-$$
+.. math::
 
-In other words, the forward mode AD computes the inner product of the Jacobian with the seed vector p ($J \\in R^{n \\cdot m}, p \\in R^m$)
+    D_pg_i \stackrel{\text{def}}{=}   \nabla_xg=\sum_{{i=1}^{n}}\frac{\partial g}{\partial h_i}\nabla h_i(x)
 
-$$
-J \\cdot p
-$$
+In other words, the forward mode AD computes the inner product of the Jacobian with the seed vector p (:math:`J \in R^{n \cdot m}, p \in R^m`)
 
+.. math::
+    J \cdot p
 
-which can be interpreted as projecting Jacobian in the direction given by p. The full Jacobian can be calculated in forward mode AD using $m$ passes, where seed vectors p are set to the m-th unit vector along coordinate $x_m$ for the m-th pass.
+which can be interpreted as projecting Jacobian in the direction given by p. The full Jacobian can be calculated in forward mode AD using :math:`m` passes, where seed vectors p are set to the m-th unit vector along coordinate :math:`x_m` for the m-th pass.
 
-The evaluation trace of function $f(x, y)=e^{sin(x)-cos(y)^2}$ at $(x,y)=(\\pi/2, \\pi/3)$ is as the table follows:
+The evaluation trace of function :math:`f(x, y)=e^{sin(x)-cos(y)^2}` at :math:`(x,y)=(\pi/2, \pi/3)` is as the table follows:
 
 .. list-table:: 
     :widths: 10 10 10 10 10 10 
@@ -100,109 +96,103 @@ The evaluation trace of function $f(x, y)=e^{sin(x)-cos(y)^2}$ at $(x,y)=(\\pi/2
       - Elementary Function
       - Value
       - Elementary Function Derivative
-      - $\\nabla x$ value 
-      - $\\nabla y$ value 
+      - :math:`\nabla x` value 
+      - :math:`\nabla y` value 
 
-    * - $x$ 
-      - $\\pi/2$ 
-      - $\\pi/2$
+    * - :math:`x` 
+      - :math:`\pi/2` 
+      - :math:`\pi/2`
       - 1
       - 1
       - 0
 
-    * - $y$ 
-      - $\\pi/3$ 
-      - $\\pi/3$
+    * - :math:`y` 
+      - :math:`\pi/3` 
+      - :math:`\pi/3`
       - 1
       - 0
       - 1
 
-    * - $v_1$
-      - $sin(x)$ 
+    * - :math:`v_1`
+      - :math:`sin(x)` 
       - 0 
-      - $cos(x)D_pv_1$
+      - :math:`cos(x)D_pv_1`
       - 0 
       - 0  
 
-    * - $v_2$
-      - $cos(y)$ 
+    * - :math:`v_2`
+      - :math:`cos(y)` 
       - 0.5
-      - $-sin(y)D_pv_2$
+      - :math:`-sin(y)D_pv_2`
       - 0
-      - $-\\sqrt{3}/2$   
+      - :math:`-\sqrt{3}/2`   
 
-    * - $v_3$
-      - $v_2^2$
+    * - :math:`v_3`
+      - :math:`v_2^2`
       - 0.25
-      - $2v_2D_pv_3$
+      - :math:`2v_2D_pv_3`
       - 0
-      - $-\\sqrt{3}$ 
+      - :math:`-\sqrt{3}` 
 
-    * - $v_4$
-      - $-v_3$ 
+    * - :math:`v_4`
+      - :math:`-v_3` 
       - -0.25
-      - $-D_pv_4$
+      - :math:`-D_pv_4`
       - 0
-      - $\\sqrt{3}$
+      - :math:`\sqrt{3}`
 
-    * - $v_5$
-      - $v_1+v_4$
+    * - :math:`v_5`
+      - :math:`v_1+v_4`
       - -0.25
-      - $D_pv_1+D_pv_4$
+      - :math:`D_pv_1+D_pv_4`
       - 0
-      - $\\sqrt{3}$ 
+      - :math:`\sqrt{3}` 
 
-    * - $v_6$
-      - $e^{v_5}$
-      - $e^{-0.25}$
-      - $e^{v_5}D_pv_5$
+    * - :math:`v_6`
+      - :math:`e^{v_5}`
+      - :math:`e^{-0.25}`
+      - :math:`e^{v_5}D_pv_5`
       - 0
-      - $\\sqrt{3}e^{\\sqrt{3}}$ 
+      - :math:`\sqrt{3}e^{\sqrt{3}}` 
 
-
-
-As observed from the table, in the forward mode AD, we are only working with elementary functions whose derivatives are known. therefore, it is trivial to calculate $D_pv_j$
+As observed from the table, in the forward mode AD, we are only working with elementary functions whose derivatives are known. therefore, it is trivial to calculate :math:`D_pv_j`
 
 Reverse mode
 -------------
 The table below shows some major differences between the forward and the reverse mode:
 
-+----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
-| forward mode                                                                                       | reverse mode                                                                                                    |
-+====================================================================================================+=================================================================================================================+
-| - evaluate the intermediate variable $v_j$ and its directional derivative $D_pv_j$ simultaneously  | - does NOT evaluate $v_j$ and $D_pv_j$ simultaneously                                                           |
-| - m passes                                                                                         | - 2 passes                                                                                                      |
-| - compute the gradient $f$ with respect to the independent variables                               | - compute the sensitivity $v_{j-m}$ of $f$ with respect to the independent AND intermediate variable $v_{j-m}$  |
-| - evaluate the function from inside out                                                            | - traversing the computational graph backwards                                                                  |
-| - could use dual number                                                                            | - can NOT use dual number                                                                                       |
-| - have a larger algorithmic operation count (usually in a factor of 5)                             | - have to store the whole computational graph                                                                   |
-+----------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
++-------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
+| forward mode                                                                                                      | reverse mode                                                                                                                          |
++===================================================================================================================+=======================================================================================================================================+
+| - evaluate the intermediate variable :math:`v_j` and its directional derivative :math:`D_pv_j` simultaneously     | - does NOT evaluate :math:`v_j` and :math:`D_pv_j` simultaneously (partial at forward pass but chained derivatives at reverse pass)   |
+| - m passes                                                                                                        | - 2 passes                                                                                                                            |
+| - compute the gradient :math:`f` with respect to the independent variables                                        | - compute the sensitivity :math:`v_{j-m}` of :math:`f` with respect to the independent AND intermediate variable :math:`v_{j-m}`      |
+| - evaluate the function from inside out                                                                           | - traversing the computational graph backwards                                                                                        |
+| - could use dual number                                                                                           | - can NOT use dual number                                                                                                             |
+| - have a larger computational count (usually in a factor of 5)                                                    | - have to store the whole computational graph                                                                                         |
++-------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
 
 Dual number
 ------------
-A dual number, similar to a complex number, has a real part and a dual part: $z = a + b \\epsilon$, where $\\epsilon$ is a high order term and we define $\\epsilon^2=0$. Dual numbers are useful to encode the primal and the tangental traces. It is a useful data structure in carrying out the forward mode of autodifferentiation, since the function evaluation and directional derivative are calcualted simultaneously in the forward mode. For example, let $f$ and $g$ be two functions th $f\\prime$ and $g\\prime$ being their derivatives. We construct two dual numbers: 
+A dual number, similar to a complex number, has a real part and a dual part: :math:`z = a + b \epsilon`, where :math:`\epsilon` is a high order term and we define :math:`\epsilon^2=0`. Dual numbers are useful to encode the primal and the tangental traces. It is a useful data structure in carrying out the forward mode of autodifferentiation, since the function evaluation and directional derivative are calcualted simultaneously in the forward mode. For example, let :math:`f` and :math:`g` be two functions th :math:`f\prime` and :math:`g\prime` being their derivatives. We construct two dual numbers: 
 
-$$
-z_1 = f + f\\prime\\epsilon
-$$
+.. math::
 
+    z_1 = f + f\prime\epsilon
 
-$$
-z_2=g+g\\prime\\epsilon
-$$
+.. math::
 
+    z_2= g + g\prime\epsilon
 
 Therefore, we have:
 
-$$
-z_1 + z_2 = (f + g) + (f\\prime + g\\prime)\\epsilon
-$$
+.. math::
 
+    z_1 + z_2 = (f + g) + (f\prime + g\prime)\epsilon
 
-$$
-z_1 \\cdot z_2 = (f \\cdot g) + (f\\cdot g\\prime + g\\cdot f\\prime)\\epsilon
-$$
+.. math::
 
+    z_1 \cdot z_2 = (f \cdot g) + (f\cdot g\prime + g\cdot f\prime)\epsilon
 
 It can be observed that adding dual numbers together resembles the addition both for the evluation and the directional direvative parts. Similarly, the multiplication of dual numbers resemble the multiplication of the functions in the real part and the product rule of the directional derivative in the dual part. Therefore, it is a useful structure to encode the primal and the tangential traces.
 
@@ -210,12 +200,12 @@ It can be observed that adding dual numbers together resembles the addition both
 Pomeranian Installation
 ========================
 
-The ``Pomeranian`` package is distributed via `PyPI <https://pypi.org/>`_.
+The ``Pomeranian`` package is distributed via `PyPI <https://pypi.org/>`_ (see `here <https://test.pypi.org/project/pomeranian/>`_ for the package).
 To install ``Pomeranian``, use an installer program with the following code
 
 .. code-block:: console
 
-   pip install pomeranian
+   pip install -i https://test.pypi.org/simple/ pomeranian
 
 All the extra dependencies (``numpy``) wil also be installed.
 
@@ -338,17 +328,17 @@ Reverse mode are implemented so that the input and output formats are exactly th
 
 Note that if there are multivariate inputs and multiple functions, the Jacobian matrix are displayed in the following format:
 
-$$
-J = 
-\\begin{bmatrix}
-\\frac {\\partial{f_1}}{\\partial{x_1}} & \\frac {\\partial{f_1}}{\\partial{x_2}} & \\cdots & \\frac {\\partial{f_1}}{\\partial{x_m}} \\
-\\frac {\\partial{f_2}}{\\partial{x_1}} & \\frac {\\partial{f_2}}{\\partial{x_2}} & \\cdots & \\frac {\\partial{f_2}}{\\partial{x_m}} \\
-\\vdots & \\vdots & \\ddots & \\vdots \\
-\\frac {\\partial{f_n}}{\\partial{x_1}} & \\frac {\\partial{f_n}}{\\partial{x_2}} & \\cdots & \\frac {\\partial{f_n}}{\\partial{x_m}}  
-\\end{bmatrix}
-$$
+.. math::
 
-where $n$ is the number of functions, and $m$ is the number of inputs.
+    J = 
+    \begin{bmatrix}
+        \frac {\partial{f_1}}{\partial{x_1}} & \frac {\partial{f_1}}{\partial{x_2}} & \cdots & \frac {\partial{f_1}}{\partial{x_m}} \\
+        \frac {\partial{f_2}}{\partial{x_1}} & \frac {\partial{f_2}}{\partial{x_2}} & \cdots & \frac {\partial{f_2}}{\partial{x_m}} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        \frac {\partial{f_n}}{\partial{x_1}} & \frac {\partial{f_n}}{\partial{x_2}} & \cdots & \frac {\partial{f_n}}{\partial{x_m}}  
+    \end{bmatrix}
+
+where :math:`n` is the number of functions, and :math:`m` is the number of inputs.
 
 See `Implementation`_ for more information about methods, and how `Multivariate Inputs and Multiple Functions`_ are handled.
 
@@ -402,7 +392,6 @@ Directory structure
     │   └── ...
     │
 
-
 Modules
 --------
 There are four directories in the package
@@ -431,7 +420,6 @@ Core Data Structures
 * Node: Class, for use in reverse mode AD
 * Intermediate values, returned values, and partial derivatives to be stored in an np.arrays
  
-
 Classes
 --------
 * ``Dual``: dual number, represent a number and the derivative of the function at the number, for use in forward mode AD
@@ -441,13 +429,12 @@ Classes
 * ``Reverse``: implements reverse mode AD
 * ``ElementaryFunction`` (module): includes other overloaded elementary functions (e.g., trig, log, exponential, etc.) that cannot be defined in ``Dual`` and ``Node`` class
 
-
 Method and Name Attributes
 ---------------------------
 * ``Dual`` class: for use in Forward
     * Attributes:
-        * self.real: real part of dual number, to calculate value $v_i$ of function
-        * self.dual: dual part of dual number, to calculate value $D_p V_i$ 
+        * self.real: real part of dual number, to calculate value :math:`v_i` of function
+        * self.dual: dual part of dual number, to calculate value :math:`D_p v_i` 
     * Methods:
         * dunder methods overloaded (e.g. *__add__*, *__mul__*, *__sub__*, etc.; see `Implementation Example`_ below for dunder method overloading)
 * ``Node`` class: for use in Reverse
@@ -539,19 +526,19 @@ Multivariate Inputs and Multiple Functions
 -------------------------------------------
 All multivariate inputs and functions are handled internally within ``Forward`` and ``Reverse`` class. As mentioned in the example, the user can input four different cases of function inputs, all of which share similar format.
 
-Regarding multivariate inputs (e.g., $\\vec{x} = [x_1, x_2]$), the user needs to specify multiple input parameters for a single function.
+Regarding multivariate inputs (e.g., :math:`\vec{x} = [x_1, x_2]`), the user needs to specify multiple input parameters for a single function.
 
-Regarding multiple functions (e.g., $\\vec{f} = [f_1, f_2]$), the user need to return a single list with callable functions as the returned variable.
+Regarding multiple functions (e.g., :math:`\vec{f} = [f_1, f_2]`), the user need to return a single list with callable functions as the returned variable.
 
 For example, to call the function
 
-$$
-f(x_1, x_2) = 
-\\begin{bmatrix} 
-x_1^2 \\ 
-e^{x_1 + x_2} 
-\\end{bmatrix}
-$$
+.. math::
+
+    f(x_1, x_2) = 
+    \begin{bmatrix} 
+        x_1^2 \\ 
+        e^{x_1 + x_2} 
+    \end{bmatrix}
 
 the user inputs the following codes:
 
