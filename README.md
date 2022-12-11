@@ -16,12 +16,12 @@ See our code coverage report (99%) [here](https://code.harvard.edu/pages/CS107/t
 
 ## Package Design
 
-![Package Design](docs/pictures/pomeranian_design_diagram.png)
+![Package Design](pictures/pomeranian_design_diagram.png)
 
 
 # Documentation
 
-[Here]() is the documentation of `pomeranian` package.
+[Here](https://cs107-team11.readthedocs.io/en/latest/) is the documentation of `pomeranian` package.
 
 # Broader Impact and Inclusivity Statement
 
